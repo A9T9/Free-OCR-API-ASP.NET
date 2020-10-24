@@ -539,7 +539,6 @@ function StartOCR() {
 
         formData.append("url", $("#imageUrl").val());
         formData.append("language", $("#ocrLanguage option:selected").val())
-        //formData.append("apikey", "Your API KEY HERE");
         formData.append("isOverlayRequired", "true");
         formData.append("FileType", $("#ocrFiletype option:selected").val())  //append the file type in form data
         //get the checked radio button value 
@@ -595,7 +594,7 @@ function StartOCR() {
             cache: false,
             contentType: false,
             headers: {
-                'apikey': 'ocrspacelocal-web'
+                'apikey': 'YOUR API KEY HERE'
             },
             processData: false,
             type: 'POST',
