@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="@ViewBag.Description">
+    <meta name="keywords" content="@ViewBag.Keywords">
+    <title>@ViewBag.Title</title>
+    <!--  Google Fonts   -->
+    @*<link async rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">*@
+    
+    <link href="~/Content/themes/basic/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/MagnificPopup/magnific-popup.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome/css/font-awesome.css" rel="stylesheet" />
+    @Styles.Render("~/Content/themes/base/css")
+    @Styles.Render("~/Content/Main/css")   
+    
+    <style>
+        #filedrag {
+            display: none;
+            font-weight: bold;
+            text-align: center;
+            padding: 1em 0;
+            margin: 1em 0;
+            color: #555;
+            border: 2px dashed #555;
+            border-radius: 7px;
+            cursor: default;
+        }
+
+            #filedrag.hover {
+                color: #f00;
+                border-color: #f00;
+                border-style: solid;
+                box-shadow: inset 0 3px 4px #888;
+            }
+
+
+        ul {
+            list-style: none outside none;
+            padding-left: 0;
+            margin: 0;
+        }
+    </style>
+
+
+</head>
+<body>
+    <!-- style="overflow-x: hidden;" -->
+    <!-- HEADER STARTS HERE -->
+    <div id="header">
+        <!--  HEADER   -->
+        <div class="row">
+            <div class="span2">
+                <!--  Logo  -->
+                <a href="/" id="logo">
+                    <img src="~/Content/Images/logo.png" alt="" class="responsive-img">
+                </a>
+            </div>
+            <div class="span10">
+                <a class="toggleMenu" id="mobile-menu-trigger" href="#"><i class="fa fa-bars"></i></a>
+                <ul class="nav" style="display:block;">
+                    <li>
+                        <a href="https://ocr.space">OCR.space</a>                        
+                    </li>
+                    <li>
+                        <a href="https://ocr.space/ocrapi">Documentation</a>
+                    </li>
+                    <li>
+                        <a href="https://ocr.space/contact">Contact Us</a>
+                    </li>
+                    <li>
+                        <a href="https://ocr.space/blog">Blog</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- end #header -->
+    <!-- HEADER ENDS HERE -->
+
+    <!-- RENDER BODY STARTS HERE -->
+    @RenderBody()
+    <!-- RENDER BODY ENDS HERE -->
+
+    <!-- FOOTER STARTS HERE -->
+    <div class="bigborder"></div>
+    <div class="row">
+        <div class="span3">
+            <a href="https://twitter.com/a9t9_com"><i class="fa fa-twitter"></i> OCR</a>
+        </div>
+        <div class="span9 nomargin">
+            OCR.space Local Web Interface V3.2
+        </div>
+    </div>
+    <div class="bigborder2"></div>
+    <div id="footer">
+        <div id="footer-bottom">
+            <div class="row">
+                <div class="span12" id="footer-bottom-widget-area-1">
+                    <div class="widget widget_text">
+                        <div class="textwidget">
+                            <p class="last">
+                                (c) 2018 a9t9 software GmbH
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER ENDS HERE -->
+
+   
+
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery") 
+
+    @*@Scripts.Render("~/bundles/OCR/js")*@
+
+    @* COMMENTED THIS LINE TO ADD SCRIPTS USING TAGS - NEED TO REMOVE SCRIPT TAGS AND ADD THIS LINE @Scripts.Render("~/bundles/OCR/js")*@
+    <script src="~/Scripts/Basic/bootstrap.min.js"></script>
+    <script src="~/Scripts/MagnificPopup/jquery.magnific-popup.min.js"></script>
+    <script src="~/Scripts/PDF.JS/pdf.js"></script>
+    <script src="~/Scripts/PDF.JS/pdf.worker.js"></script>
+    <script src="~/Scripts/prismjs/prism.js"></script>
+    <script src="~/Scripts/OCR/jquery-ocr-starter.js"></script>    
+    @*<script src="~/Scripts/Layout/easytabs/jquery.easytabs.min.js"></script>*@
+    <script src="~/Scripts/Layout/plugins.js"></script>
+    <script src="~/Scripts/Layout/script.js"></script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

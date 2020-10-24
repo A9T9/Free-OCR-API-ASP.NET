@@ -1,0 +1,287 @@
+﻿@{
+    ViewBag.Title = "OCR";
+}
+
+
+<div id="content">
+    <!--  CONTENT   -->
+    <div id="page-header">
+        <div class="row">
+            <div class="span12 whitebg">
+                <h1>OCR.space <span>Local</span></h1>
+                <div class="process-builder">
+                    <ul class="fixed">
+                        <li class="color-shade-2">
+                            <img src="~/Content/Images/icons/upload.png">
+                            <div class="process-description">
+                                <h3><strong>Upload File</strong></h3>
+                            </div>
+                        </li>
+                        <li class="color-shade-3">
+                            <img src="~/Content/Images/icons/start.png">
+                            <div class="process-description">
+                                <h3><strong>Start OCR</strong></h3>
+                            </div>
+                        </li>
+                        <li class="color-shade-1">
+                            <img src="~/Content/Images/icons/result.png">
+                            <div class="process-description">
+                                <h3><strong>Get Result</strong></h3>
+                            </div>
+                        </li>
+                        <li class="color-shade-5">
+                            <img src="~/Content/Images/icons/overlay.png">
+                            <div class="process-description">
+                                <h3><strong>Check Overlay</strong></h3>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("ParseImage", "OCR", FormMethod.Post, new { id = "ocrForm", enctype = "multipart/form-data", @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @*@Html.ValidationSummary(false, "Oh Snap! Change a few things up", new { @class = "alert alert-dismissible alert-danger" })*@
+
+        <fieldset>
+            <div class="row">
+                <div class="span12">
+                    <h3 class="headline">
+                        <span>Start Parsing Images</span>
+                    </h3>
+                </div>
+
+                <div class="span12">
+                    <div class="span4">
+                        <p>Load Source File (.png or .jpg or.pdf)</p>
+                    </div>
+                    <div class="span8">
+                        <input type="file" id="imageFile" class="form-control choose">
+                    </div>
+                </div>
+
+                <div class="span12"><h2 class="boldo">OR</h2></div>
+
+                <div class="span12">
+                    <div class="span4">
+                        <p>Paste url to source file (.png or .jpg or .pdf)</p>
+                    </div>
+                    <div class="span8">
+                        <input type="text" id="imageUrl" class="form-control choose">
+                    </div>
+                </div>
+
+                <div class="span12">
+                    <div class="span4">
+                        <p>Language</p>
+                    </div>
+                    <div class="span8">
+                        <select id="ocrLanguage" class="form-control valid selection">
+                            @{
+                                var SupportedLanguages = ViewBag.SupportedLanguages as List<Common.Language>;
+                                SupportedLanguages = SupportedLanguages.OrderBy(x => x.LanguageName).ToList();
+
+                                foreach (Common.Language language in SupportedLanguages)
+                                {
+                                    if (language.LanguageName.Equals("English"))
+                                    {
+                                        <option value="@language.LanguageCode" selected="selected">@language.LanguageName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@language.LanguageCode">@language.LanguageName</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    @*<div class="span2" id="btnStartOCR"><a class="btn btn-large btn-green-light" onclick="StartOCR()">Start OCR!</a></div>
+                        <div class="span2" id="btnCancel"><a class="btn btn-large btn-green-light" onclick="Clear()">Clear</a></div>*@
+                </div>
+
+                <div class="span12" id="FileTypeDiv" style="display:none">
+                    <div class="span4">
+                        <p>File type</p>
+                    </div>
+                    <div class="span8">
+                        <select id="ocrFiletype" class="form-control valid selection">
+                            @{
+                                var SupportedFileType = ViewBag.SupportedFileType as List<Common.OCRFileType>;
+                                SupportedFileType = SupportedFileType.OrderBy(x => x.FileTypeCode).ToList();
+
+                                foreach (Common.OCRFileType type in SupportedFileType)
+                                {
+
+                                    if (type.FileTypeName.Equals("Detect Automatically"))
+                                    {
+                                        <option value="@type.FileTypeCode" selected="selected">@type.FileTypeName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@type.FileTypeCode">@type.FileTypeName</option>
+                                    }
+
+                                    @*<option value="@type.FileTypeCode" selected="selected">@type.FileTypeName</option>*@
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="span12" id="divRotateAndScaleMode">
+                    <div class="span4">
+                        <p>Detect Orientation and Auto-rotate (images only)</p>
+                    </div>
+                    <div class="span8">
+                        <div class=""> <input type="checkbox" id="chkIsDetectOrientation" /></div>
+                    </div>
+                </div>
+
+                <div class="span12">
+                    <div class="span4"><p>Searchable PDF</p></div>
+                    <div class="span8">
+                        <div class="radio">
+                            <label class="col-lg-11" for="NoSearchable"><input type="radio" checked name="OutputType" value="3" id="NoSearchable"> No pdf needed, just show plain text and html overlay</label>                            
+                        </div>
+
+                        <div class="radio">
+                            <label class="col-lg-11" for="SearchableAndLayer"><input type="radio" name="OutputType" value="1" id="SearchableAndLayer">Create searchable PDF (visible OCR text layer)</label>
+                        </div>
+
+                        <div class="radio">
+                            <label class="col-lg-11" for="SearchableOnly"><input type="radio" name="OutputType" value="2" id="SearchableOnly">Create searchable PDF (invisible OCR text layer)</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="span12">
+                    <div class="span2 pull-right" id="btnCancel"><a class="btn btn-large btn-green-light" onclick="Clear()">Clear</a></div>
+                    <div class="span2 pull-right" id="btnStartOCR"><a class="btn btn-large btn-green-light" onclick="StartOCR()">Start OCR!</a></div>
+                </div>
+                <div id="sucOrErrMesgMainDiv" class="span12" style="display:none">
+                    <div id="sucOrErrMesgDiv" class="alert alert-dismissible">
+                        <button type="button" id="sucOrErr" class="close">×</button> @*data-dismiss="alert"*@
+                        <span id="sucOrErrMessage"></span>
+                    </div>
+                </div>
+
+                <div id="ErrMessageMainDiv" class="span12" style="display:none">
+                    <div id="ErrMessageDiv" class="alert alert-dismissable">
+                        <button type="button" id="Error" class="close">x</button>
+                        <span id="ErrorMessage"></span>
+                    </div>
+                </div>
+                <div id="WarMessageMainDiv" class="span12" style="display:none">
+                    <div id="WarMessageDiv" class="alert alert-dismissable">
+                        <button type="button" id="Warning" class="close">x</button>
+                        <span id="WarningMessage"></span>
+                    </div>
+                </div>
+
+
+                <div id="SearchableFileDownloadMainDiv" class="span12" style="display:none">
+                    <div id="SearchableFileDownloadDiv" class="alert alert-dismissible">
+                        <button type="button" id="SearchableURL" class="closePDFURL close">×</button>
+                        <span id="SearchablePDF"></span>
+                    </div>
+                </div>
+
+                <div id="animatedProgress" class="span12" style="display: none">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 progress progress-striped active">
+                        <div class="progress-bar" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div style=" clear:both; margin-top:50px !important;"></div>
+
+                <div class="span12">
+                    <div id="imagePanel" class="span5 borderspanblue">
+                        <div class="imagearea">
+                            <h3>Image Preview</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="filedrag" style="height: 80%; width:95%; display: block">(You can also drag and drop image here)</div>
+                            <img id="previewImage" class="img-responsive" style="float:left; height:80%; width:95%;" />
+                        </div>
+                        <div>
+                            <h4 id="previewText" style="color: blue; margin: 10px;"></h4>
+                        </div>
+                    </div>
+
+                    <div class="span2" style="padding-right: 12px;">
+                        <a id="btnDownloadText" class="btn btn-large btn-green-light gap" onclick="DownloadText()">Download</a> <br />
+                        <a id="btnShowOverlay" class="example-image-link btn btn-large btn-green-light" onclick="ShowOverlay()">Show Overlay</a>
+                    </div>
+
+                    <div id="resultPanel" class="span5 borderspan">
+
+                        <div id="exTab1" class="panel-body">
+                            <div class="resultarea">
+                                <h3>OCR'ed Result</h3>
+                            </div>
+                            <ul class="nav nav-tabs nav-justified" role="tablist">
+                                <li class="active">
+                                    <a href="#Text" data-toggle="tab">Text</a>
+                                </li>
+                                <li>
+                                    <a href="#Json" data-toggle="tab">Json</a>
+                                </li>
+                            </ul>
+                            <br />
+                            <div class="tab-content clearfix">
+                                <div class="tab-pane fade in active" id="Text">
+                                    @*<div class="resultareaBoot">
+                                            <h3>OCR'ed Text Result</h3>
+                                        </div>*@
+                                    @Html.TextArea("parsedResult", new { id = "txtAreaParsedResult", @class = "form-control" }) @*style = "height:120%; width:100%; margin-left:3px; margin-top:-19px"*@
+                                </div>
+                                <div class="tab-pane fade" id="Json">
+                                    @*<div class="resultareaBoot">
+                                            <h3>OCR'ed JSON Result</h3>
+                                        </div>*@
+                                    @Html.TextArea("TextOverlay", new { id = "jsonResult", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        @* COMMENTED OLD RESULT AREA *@
+                        @*<div class="resultarea">
+                                <h3>OCR'ed Text Result</h3>
+                            </div>
+                            <div>
+                                @Html.TextArea("parsedResult", new { id = "txtAreaParsedResult", @class = "form-control", style = "height:80%; width:85%; margin-left:28px;" })
+
+                             </div>*@
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+                                }
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script>
+
+        $("#tab-container").tabs();
+
+        window.onload = function () {
+            var selectedLanguage = getCookie("selectedLanguage");
+
+            if (selectedLanguage)
+                $("#ocrLanguage").val(selectedLanguage);
+        }
+    </script>
+    <script type="text/javascript">
+        var webApiBaseURL = '@System.Configuration.ConfigurationManager.AppSettings["webApiBaseURL"]';
+        var webApiParseImageRelativeURL = '@System.Configuration.ConfigurationManager.AppSettings["webApiParseImageRelativeURL"]';
+    </script>
+}
