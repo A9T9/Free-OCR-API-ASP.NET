@@ -594,7 +594,7 @@ function StartOCR() {
             cache: false,
             contentType: false,
             headers: {
-                'apikey': 'YOUR API KEY HERE'
+                'apikey': 'helloworld'   // Add your API KEY here!
             },
             processData: false,
             type: 'POST',
